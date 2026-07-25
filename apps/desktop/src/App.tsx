@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { ALL_ITEMS, TIMELINE_ITEMS } from "./data/mock";
 import { ClipboardItem } from "./components/ClipboardItem";
 import { IconSearch } from "./components/icons";
@@ -5,6 +6,13 @@ import { IconSearch } from "./components/icons";
 /* The board panel. In the real app this fills the frameless Tauri window;
    sizing is responsive rather than the design's fixed 1000×780. */
 export default function App() {
+  const [query, setQuery] = useState("");
+
+  const hasQuery = query.trim().length > 0;
+  const matchesQuery = (text: string) => text.toLowerCase().includes(query.trim().toLowerCase());
+  const filteredTimeline = hasQuery ? TIMELINE_ITEMS.filter((it) => matchesQuery(it.text)) : TIMELINE_ITEMS;
+  const noResults = hasQuery && filteredTimeline.length === 0;
+
   return (
     <main className="pb-panel pb-app" aria-label="PersonaBoard, your clipboard history">
       <div className="pb-board">
@@ -24,24 +32,38 @@ export default function App() {
               className="pb-search-input"
               placeholder="Find anything..."
               aria-label="Search your board"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
             />
+            {hasQuery && (
+              <button aria-label="Clear search" onClick={() => setQuery("")} className="pb-icon-btn pb-search-clear">
+                ×
+              </button>
+            )}
           </div>
         </header>
 
         {/* Scrollable content */}
         <div className="pb-scroll pb-content">
-          <section aria-label="Recent clipboard items">
-            <div className="pb-grid">
-              {TIMELINE_ITEMS.map((item) => {
-                const wide = item.type === "text" || item.type === "code";
-                return (
-                  <div key={item.id} className={wide ? "pb-span-2" : undefined}>
-                    <ClipboardItem item={item} dense={item.type === "image" || item.type === "video"} />
-                  </div>
-                );
-              })}
+          {noResults ? (
+            <div className="pb-empty">
+              <p className="pb-empty-title">Nothing matches yet.</p>
+              <p className="pb-empty-body">No item on your board mentions &ldquo;{query}&rdquo;.</p>
             </div>
-          </section>
+          ) : (
+            <section aria-label="Recent clipboard items">
+              <div className="pb-grid">
+                {filteredTimeline.map((item) => {
+                  const wide = item.type === "text" || item.type === "code";
+                  return (
+                    <div key={item.id} className={wide ? "pb-span-2" : undefined}>
+                      <ClipboardItem item={item} dense={item.type === "image" || item.type === "video"} />
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          )}
         </div>
 
         {/* Footer */}
