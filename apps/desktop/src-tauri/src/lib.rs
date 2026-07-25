@@ -1,6 +1,7 @@
 pub mod clipboard;
 pub mod commands;
 pub mod db;
+pub mod tray;
 
 use std::sync::Mutex;
 
@@ -20,6 +21,7 @@ pub fn run() {
             let db = db::Db::open(&data_dir.join("personaboard.db")).expect("open database");
             app.manage(AppState { db: Mutex::new(db) });
 
+            tray::setup(app)?;
             clipboard::start_monitor(app.handle().clone());
             Ok(())
         })
@@ -29,6 +31,13 @@ pub fn run() {
             commands::delete_item,
             commands::clear_history,
         ])
+        // The app lives in the tray: closing the window just hides it.
+        .on_window_event(|window, event| {
+            if let tauri::WindowEvent::CloseRequested { api, .. } = event {
+                let _ = window.hide();
+                api.prevent_close();
+            }
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
