@@ -1,8 +1,4 @@
-import { DownloadButton } from "./DownloadButton";
-
-function ShotIcon({ children }: { children: React.ReactNode }) {
-  return <div className="lp-shot-icon">{children}</div>;
-}
+import { Reveal } from "./Reveal";
 
 const stroke = {
   fill: "none",
@@ -12,24 +8,22 @@ const stroke = {
   strokeLinejoin: "round",
 } as const;
 
-/* Screenshot placeholder — warm paper frame until real captures ship. */
-function Shot({ label, icon }: { label: string; icon: React.ReactNode }) {
-  return (
-    <div className="lp-feature-shot lp-shot" role="img" aria-label={label}>
-      <ShotIcon>{icon}</ShotIcon>
-      <span className="lp-shot-label">{label}</span>
-    </div>
-  );
+interface BentoFeature {
+  title: string;
+  body: string;
+  shot: string;
+  icon: React.ReactNode;
+  id?: string;
 }
 
-const FEATURES = [
+/* Row 1 — the two hero features */
+const TOP: BentoFeature[] = [
   {
     title: "Summon it from anywhere",
-    body: "One hotkey and the board settles onto your screen — centered, calm, already focused on search. Press it again and it's gone. It feels less like opening an app and more like remembering something.",
-    kbd: "Ctrl + Shift + V",
+    body: "One hotkey and the board settles onto your screen — centered, calm, already focused on search. Press it again and it's gone. Less like opening an app, more like remembering something.",
     shot: "screenshot — the board floating over a desktop",
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" {...stroke} aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24" {...stroke} aria-hidden="true">
         <rect x="3" y="5" width="18" height="14" rx="2" />
         <path d="M7 9h2M11 9h2M15 9h2M7 13h10" />
       </svg>
@@ -37,49 +31,81 @@ const FEATURES = [
   },
   {
     title: "Find it in two seconds",
-    body: "Type a word you remember — “track”, “address”, that function name — and the list narrows as you type. Arrow keys to choose, Enter to paste, Escape to walk away. Your hands never leave the keyboard.",
-    kbd: "↑ ↓ · Enter · Esc",
-    shot: "screenshot — searching “track” with one result highlighted",
-    flip: true,
+    body: "Type a word you remember — “track”, “address”, that function name — and the list narrows as you type. Arrows to choose, Enter to paste, Escape to walk away.",
+    shot: "screenshot — searching “track”, one result highlighted",
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" {...stroke} aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24" {...stroke} aria-hidden="true">
         <circle cx="11" cy="11" r="7" />
         <path d="M21 21l-4.3-4.3" />
       </svg>
     ),
   },
+];
+
+/* Row 2 — the quieter strengths */
+const BOTTOM: BentoFeature[] = [
   {
     title: "Keep the important ones close",
-    body: "Pin the things you reach for every day — the tracking number, the meeting link, the snippet. Pinned items sit above the timeline under “Kept close”, and they survive every history clear.",
-    kbd: "Pinned survives “Clear history”",
-    shot: "screenshot — the Kept close section with a gold pin",
+    body: "Pin what you reach for daily. Pinned items sit under “Kept close” and survive every history clear.",
+    shot: "screenshot — the Kept close section",
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" {...stroke} aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24" {...stroke} aria-hidden="true">
         <path d="M12 17v5" />
         <path d="M9 3h6l-1 6 3 3v2H7v-2l3-3-1-6z" />
       </svg>
     ),
   },
   {
-    title: "Private by design",
-    body: "No account. No sync. No analytics phoning home. Your clipboard lives in a local database on your machine, and clearing it actually clears it. The app is quiet because there's nothing to report.",
-    kbd: "0 bytes leave this machine",
-    shot: "screenshot — settings panel, retention and clear controls",
-    flip: true,
-    privacy: true,
+    title: "Images remembered too",
+    body: "Screenshots and copied images land on the board with real thumbnails — not just text gets a second chance.",
+    shot: "screenshot — image thumbnails on the board",
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" {...stroke} aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24" {...stroke} aria-hidden="true">
+        <rect x="3" y="4" width="18" height="16" rx="2" />
+        <circle cx="9" cy="10" r="1.6" />
+        <path d="M21 16l-5.5-5.5a1.5 1.5 0 0 0-2.1 0L5 19" />
+      </svg>
+    ),
+  },
+  {
+    title: "Private by design",
+    body: "No account, no sync, no analytics. Your clipboard lives in a local database, and clearing it actually clears it.",
+    shot: "screenshot — settings, retention and clear controls",
+    id: "privacy",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" {...stroke} aria-hidden="true">
         <rect x="4" y="10" width="16" height="10" rx="2" />
         <path d="M8 10V7a4 4 0 0 1 8 0v3" />
       </svg>
     ),
   },
-] as const;
+];
+
+function BentoCard({ feature, tall, delay }: { feature: BentoFeature; tall?: boolean; delay: number }) {
+  return (
+    <Reveal delay={delay} className="lp-bento-item">
+      <article className="lp-bento-card" id={feature.id}>
+        <div
+          className={`lp-bento-shot${tall ? " lp-bento-shot-tall" : ""}`}
+          role="img"
+          aria-label={feature.shot}
+        >
+          <div className="lp-shot-icon">{feature.icon}</div>
+          <span className="lp-shot-label">{feature.shot}</span>
+        </div>
+        <div className="lp-bento-copy">
+          <h3>{feature.title}</h3>
+          <p>{feature.body}</p>
+        </div>
+      </article>
+    </Reveal>
+  );
+}
 
 export function Features() {
   return (
     <section className="lp-section lp-container" id="features">
-      <div className="lp-center">
+      <Reveal className="lp-center">
         <p className="lp-section-eyebrow">What it does</p>
         <h2 className="lp-section-title">
           A clipboard that remembers,
@@ -90,37 +116,20 @@ export function Features() {
           The OS clipboard holds one thing. PersonaBoard holds everything — quietly, in the
           background, until the moment you need it back.
         </p>
-      </div>
+      </Reveal>
 
-      {FEATURES.map((f) => (
-        <div
-          key={f.title}
-          className={`lp-feature${"flip" in f && f.flip ? " lp-feature-flip" : ""}`}
-          id={"privacy" in f && f.privacy ? "privacy" : undefined}
-        >
-          <div className="lp-feature-copy">
-            <h3>{f.title}</h3>
-            <p>{f.body}</p>
-            <span className="lp-feature-kbd">{f.kbd}</span>
-          </div>
-          <Shot label={f.shot} icon={f.icon} />
+      <div className="lp-bento">
+        <div className="lp-bento-row lp-bento-row-top">
+          {TOP.map((f, i) => (
+            <BentoCard key={f.title} feature={f} tall delay={i * 0.08} />
+          ))}
         </div>
-      ))}
-    </section>
-  );
-}
-
-export function CtaBand() {
-  return (
-    <div className="lp-container" id="download">
-      <div className="lp-cta-band">
-        <h2>Stop re-copying the same things.</h2>
-        <p>
-          Download PersonaBoard, copy like you normally do, and the next time you think
-          &ldquo;I just had that&rdquo; — you&apos;ll still have it.
-        </p>
-        <DownloadButton className="lp-btn lp-btn-primary">Download for free</DownloadButton>
+        <div className="lp-bento-row lp-bento-row-bottom">
+          {BOTTOM.map((f, i) => (
+            <BentoCard key={f.title} feature={f} delay={0.1 + i * 0.08} />
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
