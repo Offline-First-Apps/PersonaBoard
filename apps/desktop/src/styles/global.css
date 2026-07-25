@@ -1,0 +1,164 @@
+/* PersonaBoard design system — warm paper palette, light mode only.
+   Source of truth: the Main Board design export. */
+
+:root {
+  /* Surfaces */
+  --pb-base: #fbf8f3;
+  --pb-surface: #ffffff;
+  --pb-surface-hover: #f8f2e9;
+
+  /* Borders */
+  --pb-border: #eae0d0;
+  --pb-border-strong: #d1bc98;
+
+  /* Text */
+  --pb-text-primary: #2b2216;
+  --pb-text-secondary: #867857;
+  --pb-text-tertiary: #b3a788;
+
+  /* Gold accent — used sparingly */
+  --pb-accent: #b8863d;
+  --pb-accent-deep: #8a611f;
+  --pb-accent-soft: #f3e6c8;
+
+  /* Status */
+  --pb-success: #6e8f5e;
+  --pb-warning: #c99a3e;
+  --pb-error: #b96a54;
+
+  /* Code pane */
+  --pb-code-pane: #fcf8ef;
+  --pb-code-text: #2b2216;
+
+  /* Shadows — soft, warm-tinted; cards rest on the surface */
+  --shadow-surface: 0px 1px 3px rgba(60, 42, 10, 0.05);
+  --shadow-item-hover: 0px 4px 14px rgba(50, 36, 12, 0.09);
+  --shadow-panel: 0px 24px 60px rgba(50, 36, 12, 0.14), 0px 4px 14px rgba(50, 36, 12, 0.08);
+  --shadow-modal: 0px 20px 60px rgba(0, 0, 0, 0.08);
+
+  /* Type */
+  --font-serif: "Fraunces", "Source Serif 4", Georgia, serif;
+  --font-sans: "Inter", -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", Menlo, monospace;
+
+  /* Motion — quiet and quick */
+  --ease-out: 150ms ease-out;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--pb-base);
+  color: var(--pb-text-primary);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* ---------- Micro-interactions ---------- */
+
+@keyframes pbPulse {
+  0% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.pb-pulse {
+  animation: pbPulse 420ms ease-out forwards;
+}
+
+/* The panel fades in and settles down by a few pixels */
+@keyframes pbPanelIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pb-panel {
+  animation: pbPanelIn 180ms ease-out;
+}
+
+@keyframes pbItemIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.pb-item-enter {
+  animation: pbItemIn 200ms ease-out;
+}
+
+/* ---------- Shared primitives ---------- */
+
+.pb-icon-btn {
+  background: none;
+  border: none;
+  padding: 2px;
+  display: inline-flex;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: color var(--ease-out), transform var(--ease-out);
+}
+
+.pb-icon-btn:hover {
+  color: var(--pb-accent) !important;
+  transform: translateY(-1px);
+}
+
+.pb-icon-btn-danger:hover {
+  color: var(--pb-warning) !important;
+}
+
+.pb-icon-btn:focus-visible {
+  outline: 2px solid var(--pb-border-strong);
+  outline-offset: 2px;
+}
+
+/* Scrollbar — barely there */
+.pb-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.pb-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.pb-scroll::-webkit-scrollbar-thumb {
+  background: var(--pb-border);
+  border-radius: 4px;
+}
+
+/* The app is quiet: no animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .pb-panel,
+  .pb-item-enter,
+  .pb-pulse {
+    animation: none !important;
+  }
+}
