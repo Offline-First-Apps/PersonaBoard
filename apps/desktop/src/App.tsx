@@ -2,21 +2,42 @@ import { useState } from "react";
 import { ALL_ITEMS } from "./data/mock";
 import type { ClipboardItemData } from "./data/mock";
 import { ClipboardItem } from "./components/ClipboardItem";
+import { EverythingTabs } from "./components/EverythingTabs";
 import { IconSearch, IconStar } from "./components/icons";
+import { FILTERS, Rail } from "./components/Rail";
+import type { FilterId } from "./components/Rail";
 
 /* The board panel. In the real app this fills the frameless Tauri window;
    sizing is responsive rather than the design's fixed 1000×780. */
 export default function App() {
   const [items, setItems] = useState<ClipboardItemData[]>(ALL_ITEMS);
   const [query, setQuery] = useState("");
+  const [activeFilter, setActiveFilter] = useState<FilterId>("all");
+  const [typeTab, setTypeTab] = useState<FilterId>("all");
 
+  // Rail picks the page; on the Everything page, in-page tabs narrow by kind
+  const effectiveKind = activeFilter === "all" ? typeTab : activeFilter;
   const hasQuery = query.trim().length > 0;
-  const matchesQuery = (text: string) => text.toLowerCase().includes(query.trim().toLowerCase());
-  const visible = hasQuery ? items.filter((it) => matchesQuery(it.text)) : items;
 
+  const matchesFilter = (it: ClipboardItemData) => effectiveKind === "all" || it.type === effectiveKind;
+  const matchesQuery = (it: ClipboardItemData) =>
+    it.text.toLowerCase().includes(query.trim().toLowerCase());
+
+  const visible = items.filter((it) => matchesFilter(it) && (!hasQuery || matchesQuery(it)));
   const pinnedItems = visible.filter((it) => it.pinned);
   const timelineItems = visible.filter((it) => !it.pinned);
-  const noResults = hasQuery && visible.length === 0;
+  const noResults = (hasQuery || effectiveKind !== "all") && visible.length === 0;
+
+  // Everything page + All tab (no search): group the timeline by kind
+  const grouped = activeFilter === "all" && typeTab === "all" && !hasQuery;
+
+  const counts = FILTERS.reduce(
+    (acc, f) => {
+      acc[f.id] = f.id === "all" ? items.length : items.filter((i) => i.type === f.id).length;
+      return acc;
+    },
+    {} as Record<FilterId, number>
+  );
 
   const togglePin = (id: string) =>
     setItems((prev) => prev.map((it) => (it.id === id ? { ...it, pinned: !it.pinned } : it)));
@@ -38,16 +59,20 @@ export default function App() {
     </div>
   );
 
+  const activeLabel = FILTERS.find((f) => f.id === activeFilter)?.label || "Everything";
+
   return (
     <main className="pb-panel pb-app" aria-label="PersonaBoard, your clipboard history">
+      <Rail activeFilter={activeFilter} onFilterChange={setActiveFilter} counts={counts} />
+
       <div className="pb-board">
         {/* Header */}
         <header className="pb-header">
           <div className="pb-header-row">
             <div>
-              <p className="pb-title">Everything</p>
+              <p className="pb-title">{activeLabel}</p>
               <p className="pb-subtitle">
-                {items.length} thing{items.length === 1 ? "" : "s"} kept on your board
+                {counts[effectiveKind]} thing{counts[effectiveKind] === 1 ? "" : "s"} kept on your board
               </p>
             </div>
             <div className="pb-hotkey-chip">⌃⇧V</div>
@@ -70,12 +95,20 @@ export default function App() {
           </div>
         </header>
 
+        {activeFilter === "all" && (
+          <EverythingTabs typeTab={typeTab} onTabChange={setTypeTab} counts={counts} />
+        )}
+
         {/* Scrollable content */}
         <div className="pb-scroll pb-content">
           {noResults ? (
             <div className="pb-empty">
               <p className="pb-empty-title">Nothing matches yet.</p>
-              <p className="pb-empty-body">No item on your board mentions &ldquo;{query}&rdquo;.</p>
+              <p className="pb-empty-body">
+                {hasQuery
+                  ? <>No item on your board mentions &ldquo;{query}&rdquo;.</>
+                  : "This kind hasn't found its way to your board."}
+              </p>
             </div>
           ) : (
             <>
@@ -88,10 +121,29 @@ export default function App() {
                 </section>
               )}
 
-              <section aria-label="Recent clipboard items">
-                {pinnedItems.length > 0 && <h2 className="pb-section-heading">Recent</h2>}
-                {renderGrid(timelineItems)}
-              </section>
+              {grouped ? (
+                FILTERS.filter((f) => f.id !== "all").map((f) => {
+                  const kindItems = timelineItems.filter((it) => it.type === f.id);
+                  if (kindItems.length === 0) return null;
+                  const KindIcon = f.icon;
+                  return (
+                    <section key={f.id} aria-label={f.label} className="pb-kind-section">
+                      <h2 className="pb-section-heading">
+                        <KindIcon style={{ color: "var(--pb-text-tertiary)" }} />
+                        {f.label}
+                        <span className="pb-section-count">{kindItems.length}</span>
+                        <span aria-hidden="true" className="pb-section-rule" />
+                      </h2>
+                      {renderGrid(kindItems)}
+                    </section>
+                  );
+                })
+              ) : (
+                <section aria-label="Recent clipboard items">
+                  {pinnedItems.length > 0 && <h2 className="pb-section-heading">Recent</h2>}
+                  {renderGrid(timelineItems)}
+                </section>
+              )}
             </>
           )}
         </div>
