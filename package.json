@@ -11,6 +11,8 @@
     "build": "turbo run build",
     "check-types": "turbo run check-types",
     "dev:native": "turbo run dev -F native",
+    "desktop:dev": "pnpm -F desktop desktop:dev",
+    "desktop:build": "pnpm -F desktop desktop:build",
     "dev:web": "turbo run dev -F web",
     "dev:server": "turbo run dev -F server",
     "db:push": "turbo run db:push -F @personaboard/db",

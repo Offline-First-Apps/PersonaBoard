@@ -81,6 +81,7 @@ personaboard/
 ├── apps/
 │   ├── web/         # Frontend application (Next.js)
 │   ├── native/      # Mobile application (React Native, Expo)
+│   ├── desktop/     # Desktop application (Tauri, React + Vite + TanStack Router)
 │   └── server/      # Backend API (Hono)
 ├── packages/
 │   ├── ui/          # Shared shadcn/ui components and styles
@@ -99,6 +100,7 @@ personaboard/
 - `pnpm run db:generate`: Generate database client/types
 - `pnpm run db:migrate`: Run database migrations
 - `pnpm run db:studio`: Open database studio UI
-- `cd apps/web && pnpm run desktop:dev`: Start Tauri desktop app in development
-- `cd apps/web && pnpm run desktop:build`: Build Tauri desktop app
+- `pnpm run desktop:dev`: Run the Tauri desktop app (`apps/desktop`) in development
+- `pnpm run desktop:build`: Build the Tauri desktop app
+- `cd apps/web && pnpm run desktop:dev`: Start the legacy Tauri scaffold inside `apps/web` (to be removed)
 - Note: Desktop builds package static web assets. Next.js needs a static/export build configuration before desktop packaging will work.
