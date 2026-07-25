@@ -1,10 +1,35 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { env } from "@personaboard/env/web";
 
 /* The installer lives here once we publish releases. */
 const DOWNLOAD_URL = "/downloads/personaboard-setup.exe";
 const DOWNLOAD_NAME = "personaboard-setup.exe";
+
+/* One env variable points the web app at the Hono server. */
+const SERVER_URL = env.NEXT_PUBLIC_SERVER_URL;
+
+async function captureLead(name: string, email: string) {
+  try {
+    const res = await fetch(`${SERVER_URL}/leads`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email }),
+    });
+    if (res.ok) return;
+    throw new Error(`Server responded ${res.status}`);
+  } catch {
+    // Server unreachable — keep the lead locally so nothing is lost.
+    try {
+      const leads = JSON.parse(localStorage.getItem("pb-leads") ?? "[]");
+      leads.push({ name, email, at: new Date().toISOString() });
+      localStorage.setItem("pb-leads", JSON.stringify(leads));
+    } catch {
+      /* localStorage unavailable — the download matters more */
+    }
+  }
+}
 
 interface DownloadDialogProps {
   open: boolean;
@@ -44,17 +69,10 @@ export function DownloadDialog({ open, onClose }: DownloadDialogProps) {
     return Object.keys(next).length === 0;
   };
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (!validate()) return;
 
-    // Keep the lead locally for now — wiring to the backend comes later.
-    try {
-      const leads = JSON.parse(localStorage.getItem("pb-leads") ?? "[]");
-      leads.push({ name: name.trim(), email: email.trim(), at: new Date().toISOString() });
-      localStorage.setItem("pb-leads", JSON.stringify(leads));
-    } catch {
-      /* localStorage unavailable — the download matters more */
-    }
+    await captureLead(name.trim(), email.trim());
 
     // The `download` attribute forces a save. If a browser still opens the
     // file in a new tab (e.g. unknown MIME type), the fallback link below
@@ -86,7 +104,7 @@ export function DownloadDialog({ open, onClose }: DownloadDialogProps) {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            handleDownload();
+            void handleDownload();
           }}
           noValidate
         >
