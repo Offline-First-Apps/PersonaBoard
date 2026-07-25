@@ -7,6 +7,7 @@ import {
   createRouter,
   RouterProvider,
 } from "@tanstack/react-router";
+import App from "./App";
 
 // NOTE: No screens yet — routes are placeholders until designs arrive.
 
@@ -15,9 +16,7 @@ const rootRoute = createRootRoute();
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/",
-  component: function IndexPlaceholder() {
-    return null;
-  },
+  component: App,
 });
 
 const routeTree = rootRoute.addChildren([indexRoute]);

@@ -140,6 +140,169 @@ body {
   outline-offset: 2px;
 }
 
+/* ---------- Panel shell ---------- */
+
+/* Fills the frameless window; responsive instead of the design's fixed 1000×780 */
+.pb-app {
+  width: 100vw;
+  height: 100vh;
+  background: var(--pb-base);
+  display: flex;
+  overflow: hidden;
+}
+
+.pb-board {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.pb-header {
+  padding: 20px 28px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.pb-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pb-title {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--pb-text-primary);
+}
+
+.pb-subtitle {
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--pb-text-secondary);
+}
+
+.pb-hotkey-chip {
+  font-size: 11px;
+  color: var(--pb-text-secondary);
+  background: var(--pb-surface-hover);
+  border: 1px solid var(--pb-border);
+  border-radius: 4px;
+  padding: 3px 9px;
+}
+
+.pb-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--pb-surface);
+  border: 1px solid var(--pb-border);
+  border-radius: 20px;
+  padding: 10px 16px;
+  transition: border-color var(--ease-out);
+}
+
+.pb-search:focus-within {
+  border-color: var(--pb-border-strong);
+}
+
+.pb-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--pb-text-primary);
+  min-width: 0;
+}
+
+.pb-search-input::placeholder {
+  color: var(--pb-text-tertiary);
+}
+
+.pb-search-clear {
+  color: var(--pb-text-tertiary);
+  font-size: 14px;
+}
+
+.pb-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(232px, 100%), 1fr));
+  gap: 18px 16px;
+  align-items: start;
+}
+
+.pb-span-2 {
+  grid-column: span 2;
+}
+
+.pb-footer {
+  flex-shrink: 0;
+  padding: 10px 28px 16px;
+  border-top: 1px solid var(--pb-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.pb-footer-left {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--pb-text-tertiary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pb-footer-right {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--pb-text-secondary);
+  flex-shrink: 0;
+}
+
+/* Narrow windows: one column, tighter gutters */
+@media (max-width: 620px) {
+  .pb-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pb-span-2 {
+    grid-column: span 1;
+  }
+
+  .pb-header {
+    padding: 16px 16px 12px;
+  }
+
+  .pb-content {
+    padding: 4px 16px 20px;
+  }
+
+  .pb-footer {
+    padding: 8px 16px 12px;
+  }
+
+  .pb-footer-left {
+    display: none;
+  }
+}
+
 /* ---------- Clipboard item cards ---------- */
 
 .pb-item {
