@@ -140,6 +140,177 @@ body {
   outline-offset: 2px;
 }
 
+/* ---------- Settings panel ---------- */
+
+.pb-settings {
+  padding: 4px 28px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  max-width: 560px;
+}
+
+.pb-settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pb-settings-heading {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--pb-text-secondary);
+}
+
+.pb-settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.pb-settings-label {
+  font-size: 14px;
+  color: var(--pb-text-primary);
+}
+
+.pb-settings-note {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--pb-text-tertiary);
+}
+
+.pb-settings-about {
+  border-top: 1px solid var(--pb-border);
+  padding-top: 20px;
+}
+
+.pb-back-btn {
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--pb-text-secondary);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background var(--ease-out), color var(--ease-out);
+}
+
+.pb-back-btn:hover {
+  background: var(--pb-surface-hover);
+  color: var(--pb-text-primary);
+}
+
+/* Segmented control */
+.pb-seg {
+  display: inline-flex;
+  gap: 4px;
+  background: var(--pb-surface-hover);
+  border: 1px solid var(--pb-border);
+  border-radius: 10px;
+  padding: 3px;
+}
+
+.pb-seg-btn {
+  border: none;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  color: var(--pb-text-secondary);
+  padding: 5px 12px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background var(--ease-out), color var(--ease-out);
+}
+
+.pb-seg-btn-active {
+  background: var(--pb-surface);
+  color: var(--pb-text-primary);
+  font-weight: 500;
+  box-shadow: var(--shadow-surface);
+}
+
+/* Toggle */
+.pb-toggle {
+  width: 36px;
+  height: 21px;
+  border-radius: 999px;
+  border: 1px solid var(--pb-border-strong);
+  background: var(--pb-surface-hover);
+  cursor: pointer;
+  position: relative;
+  transition: background var(--ease-out);
+  flex-shrink: 0;
+}
+
+.pb-toggle-on {
+  background: var(--pb-accent);
+  border-color: var(--pb-accent);
+}
+
+.pb-toggle-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(60, 42, 10, 0.2);
+  transition: transform var(--ease-out);
+}
+
+.pb-toggle-on .pb-toggle-knob {
+  transform: translateX(15px);
+}
+
+/* Danger actions — calm, not alarming */
+.pb-danger-outline-btn {
+  background: none;
+  border: 1px solid var(--pb-border);
+  border-radius: 8px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--pb-error);
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: border-color var(--ease-out), background var(--ease-out);
+}
+
+.pb-danger-outline-btn:hover {
+  border-color: var(--pb-error);
+  background: rgba(185, 106, 84, 0.06);
+}
+
+.pb-danger-btn {
+  background: var(--pb-error);
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: #fff;
+  padding: 7px 14px;
+  cursor: pointer;
+}
+
+.pb-confirm {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 620px) {
+  .pb-settings {
+    padding: 4px 16px 24px;
+  }
+
+  .pb-settings-row {
+    flex-wrap: wrap;
+  }
+}
+
 /* ---------- Left rail ---------- */
 
 .pb-rail {

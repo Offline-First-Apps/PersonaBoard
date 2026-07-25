@@ -8,6 +8,7 @@ import {
   RouterProvider,
 } from "@tanstack/react-router";
 import App from "./App";
+import SettingsPage from "./pages/SettingsPage";
 
 // NOTE: No screens yet — routes are placeholders until designs arrive.
 
@@ -19,7 +20,13 @@ const indexRoute = createRoute({
   component: App,
 });
 
-const routeTree = rootRoute.addChildren([indexRoute]);
+const settingsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/settings",
+  component: SettingsPage,
+});
+
+const routeTree = rootRoute.addChildren([indexRoute, settingsRoute]);
 
 const router = createRouter({ routeTree });
 

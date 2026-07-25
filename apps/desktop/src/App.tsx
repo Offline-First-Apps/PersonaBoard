@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import type { ClipboardItemData } from "./lib/types";
-import { copyToClipboard, deleteItem, getItems, onItemsChanged, setPinned } from "./lib/api";
+import { copyToClipboard, deleteItem, getItems, onItemsChanged, onOpenSettings, setPinned } from "./lib/api";
 import { toBoardItem } from "./lib/mapping";
 import { ClipboardItem } from "./components/ClipboardItem";
 import { EverythingTabs } from "./components/EverythingTabs";
@@ -11,6 +12,7 @@ import type { FilterId } from "./components/Rail";
 /* The board panel. In the real app this fills the frameless Tauri window;
    sizing is responsive rather than the design's fixed 1000×780. */
 export default function App() {
+  const navigate = useNavigate();
   const [items, setItems] = useState<ClipboardItemData[]>([]);
   const [query, setQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<FilterId>("all");
@@ -27,6 +29,12 @@ export default function App() {
     void onItemsChanged(() => void refresh()).then((fn) => (unlisten = fn));
     return () => unlisten?.();
   }, [refresh]);
+
+  useEffect(() => {
+    let unlisten: (() => void) | undefined;
+    void onOpenSettings(() => void navigate({ to: "/settings" })).then((fn) => (unlisten = fn));
+    return () => unlisten?.();
+  }, [navigate]);
 
   // Rail picks the page; on the Everything page, in-page tabs narrow by kind
   const effectiveKind = activeFilter === "all" ? typeTab : activeFilter;
@@ -92,7 +100,12 @@ export default function App() {
 
   return (
     <main className="pb-panel pb-app" aria-label="PersonaBoard, your clipboard history">
-      <Rail activeFilter={activeFilter} onFilterChange={setActiveFilter} counts={counts} />
+      <Rail
+        activeFilter={activeFilter}
+        onFilterChange={setActiveFilter}
+        counts={counts}
+        onOpenSettings={() => void navigate({ to: "/settings" })}
+      />
 
       <div className="pb-board">
         {/* Header */}
