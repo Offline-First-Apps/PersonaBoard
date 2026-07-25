@@ -8,3 +8,12 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model Lead {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("leads")
+}
