@@ -12,6 +12,7 @@ pub fn show_main_window(app: &tauri::AppHandle) {
         let _ = window.unminimize();
         let _ = window.show();
         let _ = window.set_focus();
+        let _ = app.emit("panel-shown", ());
     }
 }
 

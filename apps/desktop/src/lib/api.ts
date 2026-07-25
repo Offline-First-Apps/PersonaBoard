@@ -41,6 +41,11 @@ export function onOpenSettings(callback: () => void) {
   return listen("open-settings", callback).then((unlisten) => unlisten);
 }
 
+/** Fires whenever the panel becomes visible. */
+export function onPanelShown(callback: () => void) {
+  return listen("panel-shown", callback).then((unlisten) => unlisten);
+}
+
 /** Fires when the clipboard monitor records a new item. */
 export function onItemsChanged(callback: () => void) {
   return listen("items-changed", callback).then((unlisten) => unlisten);

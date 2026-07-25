@@ -1,7 +1,17 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import type { ClipboardItemData } from "./lib/types";
-import { copyToClipboard, deleteItem, getItems, onItemsChanged, onOpenSettings, setPinned } from "./lib/api";
+import {
+  copyToClipboard,
+  deleteItem,
+  getItems,
+  getSettings,
+  onItemsChanged,
+  onOpenSettings,
+  onPanelShown,
+  setPinned,
+} from "./lib/api";
+import clickUrl from "./assets/soft-click.wav";
 import { toBoardItem } from "./lib/mapping";
 import { ClipboardItem } from "./components/ClipboardItem";
 import { EverythingTabs } from "./components/EverythingTabs";
@@ -36,6 +46,20 @@ export default function App() {
     void onOpenSettings(() => void navigate({ to: "/settings" })).then((fn) => (unlisten = fn));
     return () => unlisten?.();
   }, [navigate]);
+
+  // A very subtle, soft click when the panel opens — off by default.
+  const click = useRef<HTMLAudioElement | null>(null);
+  useEffect(() => {
+    click.current = new Audio(clickUrl);
+    let unlisten: (() => void) | undefined;
+    void onPanelShown(() => {
+      // Read the setting fresh each time so toggling it applies immediately.
+      void getSettings().then((s) => {
+        if (s.sound_on_open) void click.current?.play().catch(() => {});
+      });
+    }).then((fn) => (unlisten = fn));
+    return () => unlisten?.();
+  }, []);
 
   // Rail picks the page; on the Everything page, in-page tabs narrow by kind
   const effectiveKind = activeFilter === "all" ? typeTab : activeFilter;
