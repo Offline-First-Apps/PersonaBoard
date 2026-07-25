@@ -303,6 +303,22 @@ body {
   }
 }
 
+/* Section headings — "Kept close", "Recent", kind groups */
+.pb-pinned-section {
+  margin-bottom: 24px;
+}
+
+.pb-section-heading {
+  margin: 12px 0 10px;
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 500;
+  color: var(--pb-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 /* Empty state — quiet, serif, centered */
 .pb-empty {
   flex: 1;
