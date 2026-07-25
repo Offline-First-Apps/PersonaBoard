@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/landing/Navbar";
 import { Hero, VideoPlaceholder } from "@/components/landing/Hero";
-import { CtaBand, Features } from "@/components/landing/Features";
-import { Footer } from "@/components/landing/Footer";
+import { Features } from "@/components/landing/Features";
+import { FinalCta, Footer } from "@/components/landing/Footer";
 
 export default function Home() {
   return (
@@ -11,7 +11,7 @@ export default function Home() {
         <Hero />
         <VideoPlaceholder />
         <Features />
-        <CtaBand />
+        <FinalCta />
       </main>
       <Footer />
     </div>
