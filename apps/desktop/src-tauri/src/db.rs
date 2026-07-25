@@ -17,6 +17,8 @@ pub struct Item {
     pub is_pinned: bool,
     pub created_at: String,
     pub last_used_at: Option<String>,
+    /// "text" | "image" — v1 stored text only; the column was added later.
+    pub kind: String,
 }
 
 pub struct Db {
@@ -46,13 +48,24 @@ impl Db {
             CREATE INDEX IF NOT EXISTS idx_items_created_at ON items(created_at);
             ",
         )?;
+        // Migration: v1 tables have no `kind` column.
+        let has_kind = {
+            let mut stmt = conn.prepare("PRAGMA table_info(items)")?;
+            let names: Vec<String> = stmt
+                .query_map([], |row| row.get(1))?
+                .collect::<rusqlite::Result<_>>()?;
+            names.iter().any(|n| n == "kind")
+        };
+        if !has_kind {
+            conn.execute_batch("ALTER TABLE items ADD COLUMN kind TEXT NOT NULL DEFAULT 'text'")?;
+        }
         Ok(Self { conn })
     }
 
     /// All items: pinned first, then newest first.
     pub fn list(&self) -> rusqlite::Result<Vec<Item>> {
         let mut stmt = self.conn.prepare(
-            "SELECT id, content, content_hash, source_app, is_pinned, created_at, last_used_at
+            "SELECT id, content, content_hash, source_app, is_pinned, created_at, last_used_at, kind
              FROM items
              ORDER BY is_pinned DESC, created_at DESC",
         )?;
@@ -65,6 +78,7 @@ impl Db {
                 is_pinned: row.get::<_, i64>(4)? != 0,
                 created_at: row.get(5)?,
                 last_used_at: row.get(6)?,
+                kind: row.get(7)?,
             })
         })?;
         rows.collect()
@@ -87,11 +101,11 @@ impl Db {
         Ok(rows.next()?.map(|row| row.get(0)).transpose()?)
     }
 
-    pub fn insert(&self, content: &str, hash: &str, source_app: Option<&str>) -> rusqlite::Result<i64> {
+    pub fn insert(&self, content: &str, hash: &str, source_app: Option<&str>, kind: &str) -> rusqlite::Result<i64> {
         self.conn.execute(
-            "INSERT INTO items (content, content_hash, source_app, is_pinned, created_at, last_used_at)
-             VALUES (?1, ?2, ?3, 0, ?4, ?4)",
-            params![content, hash, source_app, now_iso()],
+            "INSERT INTO items (content, content_hash, source_app, is_pinned, created_at, last_used_at, kind)
+             VALUES (?1, ?2, ?3, 0, ?4, ?4, ?5)",
+            params![content, hash, source_app, now_iso(), kind],
         )?;
         Ok(self.conn.last_insert_rowid())
     }

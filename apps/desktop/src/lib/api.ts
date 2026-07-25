@@ -12,6 +12,7 @@ export interface DbItem {
   is_pinned: boolean;
   created_at: string;
   last_used_at: string | null;
+  kind: string;
 }
 
 export const getItems = () => invoke<DbItem[]>("get_items");

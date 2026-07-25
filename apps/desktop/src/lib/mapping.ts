@@ -1,8 +1,9 @@
+import { convertFileSrc } from "@tauri-apps/api/core";
 import type { DbItem } from "./api";
 import type { ClipboardItemData, ClipboardItemType } from "./types";
 
-/* Map a database row to what the board renders. v1 is text-only, so we
-   classify content into text / link / code. Media types arrive in v2. */
+/* Map a database row to what the board renders. Text rows are classified
+   into text / link / code; image rows point at their stored PNG. */
 
 function classify(content: string): ClipboardItemType {
   const t = content.trim();
@@ -32,6 +33,16 @@ export function formatRelativeTime(iso: string): string {
 }
 
 export function toBoardItem(row: DbItem): ClipboardItemData {
+  if (row.kind === "image") {
+    return {
+      id: String(row.id),
+      type: "image",
+      text: "Copied image",
+      time: formatRelativeTime(row.last_used_at ?? row.created_at),
+      imageUrl: convertFileSrc(row.content),
+      pinned: row.is_pinned,
+    };
+  }
   return {
     id: String(row.id),
     type: classify(row.content),

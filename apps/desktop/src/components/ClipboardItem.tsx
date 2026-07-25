@@ -174,8 +174,14 @@ export function ClipboardItem({ item, dense, leaving, onPin, onCopy, onDelete }:
     return (
       <div role="button" tabIndex={0} className={`pb-item pb-item-enter pb-item-media${leaving ? " pb-item-leave" : ""}`} {...hoverProps}>
         <div className="pb-media-thumb" style={{ height: dense ? 132 : 168 }}>
-          {item.type === "image" && item.swatch && <Swatch colors={item.swatch} />}
-          {item.type === "video" && item.swatch && <VideoThumb colors={item.swatch} duration={item.meta} />}
+          {item.imageUrl ? (
+            <img className="pb-media-img" src={item.imageUrl} alt={item.text} draggable={false} />
+          ) : (
+            <>
+              {item.type === "image" && item.swatch && <Swatch colors={item.swatch} />}
+              {item.type === "video" && item.swatch && <VideoThumb colors={item.swatch} duration={item.meta} />}
+            </>
+          )}
           {pinned && <span aria-hidden="true" className="pb-pin-dot" />}
           {justPinned && <span aria-hidden="true" className="pb-pulse pb-pin-flash" />}
         </div>

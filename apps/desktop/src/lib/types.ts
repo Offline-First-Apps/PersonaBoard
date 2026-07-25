@@ -14,5 +14,7 @@ export interface ClipboardItemData {
   meta?: string;
   /** Placeholder thumbnail colors for media items (v2) */
   swatch?: string[];
+  /** Real thumbnail for captured images (asset protocol URL) */
+  imageUrl?: string;
   pinned?: boolean;
 }
