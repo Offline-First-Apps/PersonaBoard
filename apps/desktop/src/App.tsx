@@ -1,6 +1,7 @@
-import { useState } from "react";
-import { ALL_ITEMS } from "./data/mock";
-import type { ClipboardItemData } from "./data/mock";
+import { useCallback, useEffect, useState } from "react";
+import type { ClipboardItemData } from "./lib/types";
+import { copyToClipboard, deleteItem, getItems, onItemsChanged, setPinned } from "./lib/api";
+import { toBoardItem } from "./lib/mapping";
 import { ClipboardItem } from "./components/ClipboardItem";
 import { EverythingTabs } from "./components/EverythingTabs";
 import { IconSearch, IconStar } from "./components/icons";
@@ -10,10 +11,22 @@ import type { FilterId } from "./components/Rail";
 /* The board panel. In the real app this fills the frameless Tauri window;
    sizing is responsive rather than the design's fixed 1000×780. */
 export default function App() {
-  const [items, setItems] = useState<ClipboardItemData[]>(ALL_ITEMS);
+  const [items, setItems] = useState<ClipboardItemData[]>([]);
   const [query, setQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<FilterId>("all");
   const [typeTab, setTypeTab] = useState<FilterId>("all");
+
+  const refresh = useCallback(async () => {
+    const rows = await getItems();
+    setItems(rows.map(toBoardItem));
+  }, []);
+
+  useEffect(() => {
+    void refresh();
+    let unlisten: (() => void) | undefined;
+    void onItemsChanged(() => void refresh()).then((fn) => (unlisten = fn));
+    return () => unlisten?.();
+  }, [refresh]);
 
   // Rail picks the page; on the Everything page, in-page tabs narrow by kind
   const effectiveKind = activeFilter === "all" ? typeTab : activeFilter;
@@ -39,8 +52,22 @@ export default function App() {
     {} as Record<FilterId, number>
   );
 
-  const togglePin = (id: string) =>
+  const togglePin = (id: string) => {
+    const item = items.find((it) => it.id === id);
+    if (!item) return;
     setItems((prev) => prev.map((it) => (it.id === id ? { ...it, pinned: !it.pinned } : it)));
+    void setPinned(Number(id), !item.pinned);
+  };
+
+  const removeItem = (id: string) => {
+    setItems((prev) => prev.filter((it) => it.id !== id));
+    void deleteItem(Number(id));
+  };
+
+  const copyAgain = (id: string) => {
+    const item = items.find((it) => it.id === id);
+    if (item) void copyToClipboard(item.text);
+  };
 
   const renderGrid = (list: ClipboardItemData[]) => (
     <div className="pb-grid">
@@ -52,6 +79,8 @@ export default function App() {
               item={item}
               dense={item.type === "image" || item.type === "video"}
               onPin={togglePin}
+              onCopy={copyAgain}
+              onDelete={removeItem}
             />
           </div>
         );
@@ -101,7 +130,12 @@ export default function App() {
 
         {/* Scrollable content */}
         <div className="pb-scroll pb-content">
-          {noResults ? (
+          {items.length === 0 ? (
+            <div className="pb-empty">
+              <p className="pb-empty-title">Your board is quiet.</p>
+              <p className="pb-empty-body">Copy something, and it will be here when you need it.</p>
+            </div>
+          ) : noResults ? (
             <div className="pb-empty">
               <p className="pb-empty-title">Nothing matches yet.</p>
               <p className="pb-empty-body">

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { ClipboardItemData, ClipboardItemType } from "../data/mock";
+import type { ClipboardItemData, ClipboardItemType } from "../lib/types";
 import {
   IconBrowser,
   IconCode,

@@ -1,4 +1,4 @@
-import type { ClipboardItemType } from "../data/mock";
+import type { ClipboardItemType } from "../lib/types";
 import {
   IconBrowser,
   IconCode,

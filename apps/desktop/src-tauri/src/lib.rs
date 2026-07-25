@@ -1,4 +1,5 @@
 pub mod clipboard;
+pub mod commands;
 pub mod db;
 
 use std::sync::Mutex;
@@ -22,6 +23,12 @@ pub fn run() {
             clipboard::start_monitor(app.handle().clone());
             Ok(())
         })
+        .invoke_handler(tauri::generate_handler![
+            commands::get_items,
+            commands::set_pinned,
+            commands::delete_item,
+            commands::clear_history,
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
