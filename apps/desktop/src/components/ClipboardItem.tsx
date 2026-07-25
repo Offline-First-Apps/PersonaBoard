@@ -87,12 +87,14 @@ function TerminalBlock({ text, pinned }: { text: string; pinned: boolean }) {
 interface ClipboardItemProps {
   item: ClipboardItemData;
   dense?: boolean;
+  /** True while the item is fading out before removal */
+  leaving?: boolean;
   onPin?: (id: string) => void;
   onCopy?: (id: string) => void;
   onDelete?: (id: string) => void;
 }
 
-export function ClipboardItem({ item, dense, onPin, onCopy, onDelete }: ClipboardItemProps) {
+export function ClipboardItem({ item, dense, leaving, onPin, onCopy, onDelete }: ClipboardItemProps) {
   const [hovered, setHovered] = useState(false);
   const [justPinned, setJustPinned] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -170,7 +172,7 @@ export function ClipboardItem({ item, dense, onPin, onCopy, onDelete }: Clipboar
 
   if (isMedia) {
     return (
-      <div role="button" tabIndex={0} className="pb-item pb-item-enter pb-item-media" {...hoverProps}>
+      <div role="button" tabIndex={0} className={`pb-item pb-item-enter pb-item-media${leaving ? " pb-item-leave" : ""}`} {...hoverProps}>
         <div className="pb-media-thumb" style={{ height: dense ? 132 : 168 }}>
           {item.type === "image" && item.swatch && <Swatch colors={item.swatch} />}
           {item.type === "video" && item.swatch && <VideoThumb colors={item.swatch} duration={item.meta} />}
@@ -188,7 +190,7 @@ export function ClipboardItem({ item, dense, onPin, onCopy, onDelete }: Clipboar
 
   if (isFile) {
     return (
-      <div role="button" tabIndex={0} className={`pb-item pb-item-enter pb-item-card${pinned ? " pb-item-pinned" : ""}`} {...hoverProps}>
+      <div role="button" tabIndex={0} className={`pb-item pb-item-enter pb-item-card${pinned ? " pb-item-pinned" : ""}${leaving ? " pb-item-leave" : ""}`} {...hoverProps}>
         {justPinned && <span aria-hidden="true" className="pb-pulse pb-pin-flash" />}
         <div className="pb-file-row">
           <FoldedFileIcon ext={fileExt} />
@@ -204,7 +206,7 @@ export function ClipboardItem({ item, dense, onPin, onCopy, onDelete }: Clipboar
 
   if (isCode) {
     return (
-      <div role="button" tabIndex={0} className={`pb-item pb-item-enter pb-item-card${pinned ? " pb-item-pinned" : ""}`} {...hoverProps}>
+      <div role="button" tabIndex={0} className={`pb-item pb-item-enter pb-item-card${pinned ? " pb-item-pinned" : ""}${leaving ? " pb-item-leave" : ""}`} {...hoverProps}>
         {justPinned && <span aria-hidden="true" className="pb-pulse pb-pin-flash" />}
         <TerminalBlock text={item.text} pinned={pinned} />
         {captionRow}
@@ -214,7 +216,7 @@ export function ClipboardItem({ item, dense, onPin, onCopy, onDelete }: Clipboar
 
   if (isLink) {
     return (
-      <div role="button" tabIndex={0} className={`pb-item pb-item-enter pb-item-card${pinned ? " pb-item-pinned" : ""}`} {...hoverProps}>
+      <div role="button" tabIndex={0} className={`pb-item pb-item-enter pb-item-card${pinned ? " pb-item-pinned" : ""}${leaving ? " pb-item-leave" : ""}`} {...hoverProps}>
         {justPinned && <span aria-hidden="true" className="pb-pulse pb-pin-flash" />}
         <LinkChrome domain={domain} />
         <span className="pb-link-url">{item.text}</span>
@@ -225,7 +227,7 @@ export function ClipboardItem({ item, dense, onPin, onCopy, onDelete }: Clipboar
 
   /* Text: a quiet card with a 2–3 line preview */
   return (
-    <div role="button" tabIndex={0} className={`pb-item pb-item-enter pb-item-card${pinned ? " pb-item-pinned" : ""}`} {...hoverProps}>
+    <div role="button" tabIndex={0} className={`pb-item pb-item-enter pb-item-card${pinned ? " pb-item-pinned" : ""}${leaving ? " pb-item-leave" : ""}`} {...hoverProps}>
       {justPinned && <span aria-hidden="true" className="pb-pulse pb-pin-flash" />}
       <p className="pb-text-preview">{item.text}</p>
       {captionRow}

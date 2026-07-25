@@ -14,6 +14,7 @@ import type { FilterId } from "./components/Rail";
 export default function App() {
   const navigate = useNavigate();
   const [items, setItems] = useState<ClipboardItemData[]>([]);
+  const [leavingIds, setLeavingIds] = useState<ReadonlySet<string>>(new Set());
   const [query, setQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<FilterId>("all");
   const [typeTab, setTypeTab] = useState<FilterId>("all");
@@ -68,8 +69,17 @@ export default function App() {
   };
 
   const removeItem = (id: string) => {
-    setItems((prev) => prev.filter((it) => it.id !== id));
-    void deleteItem(Number(id));
+    // Fade out first; the gap closes when the item actually leaves.
+    setLeavingIds((prev) => new Set(prev).add(id));
+    setTimeout(() => {
+      setItems((prev) => prev.filter((it) => it.id !== id));
+      setLeavingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+      void deleteItem(Number(id));
+    }, 180);
   };
 
   const copyAgain = (id: string) => {
@@ -86,6 +96,7 @@ export default function App() {
             <ClipboardItem
               item={item}
               dense={item.type === "image" || item.type === "video"}
+              leaving={leavingIds.has(item.id)}
               onPin={togglePin}
               onCopy={copyAgain}
               onDelete={removeItem}

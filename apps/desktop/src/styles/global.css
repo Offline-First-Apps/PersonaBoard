@@ -114,6 +114,23 @@ body {
   animation: pbItemIn 200ms ease-out;
 }
 
+/* Deletes fade out and settle slightly; the gap closes after removal */
+@keyframes pbItemOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+
+.pb-item-leave {
+  animation: pbItemOut 180ms ease-in forwards;
+  pointer-events: none;
+}
+
 /* ---------- Shared primitives ---------- */
 
 .pb-icon-btn {
@@ -1025,6 +1042,7 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .pb-panel,
   .pb-item-enter,
+  .pb-item-leave,
   .pb-pulse {
     animation: none !important;
   }
