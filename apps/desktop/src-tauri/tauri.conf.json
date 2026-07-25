@@ -13,9 +13,11 @@
     "windows": [
       {
         "title": "PersonaBoard",
-        "width": 360,
-        "height": 520,
-        "resizable": false,
+        "width": 1000,
+        "height": 780,
+        "minWidth": 360,
+        "minHeight": 480,
+        "resizable": true,
         "decorations": false,
         "alwaysOnTop": true,
         "visible": false,
