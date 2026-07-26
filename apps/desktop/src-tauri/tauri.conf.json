@@ -18,11 +18,11 @@
         "minWidth": 360,
         "minHeight": 480,
         "resizable": true,
-        "decorations": false,
-        "alwaysOnTop": true,
-        "visible": false,
+        "decorations": true,
+        "alwaysOnTop": false,
+        "visible": true,
         "center": true,
-        "skipTaskbar": true
+        "skipTaskbar": false
       }
     ],
     "security": {

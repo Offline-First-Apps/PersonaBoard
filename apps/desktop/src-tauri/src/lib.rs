@@ -34,13 +34,6 @@ pub fn run() {
 
             tray::setup(app)?;
             clipboard::start_monitor(app.handle().clone());
-
-            // The window starts hidden by design (the app lives in the tray,
-            // summoned by hotkey). In dev builds there's no hotkey yet, so
-            // show it on launch — otherwise it looks like nothing happened.
-            #[cfg(debug_assertions)]
-            tray::show_main_window(app.handle());
-
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
