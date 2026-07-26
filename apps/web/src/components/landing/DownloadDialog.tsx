@@ -4,9 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import { env } from "@personaboard/env/web";
 import { trackEvent } from "@/lib/gtag";
 
-/* The installer lives here once we publish releases. */
-const DOWNLOAD_URL = "/downloads/personaboard-setup.exe";
-const DOWNLOAD_NAME = "personaboard-setup.exe";
+const DOWNLOAD_URL = env.NEXT_PUBLIC_DOWNLOAD_URL;
+/* The filename is the last segment of the URL — used for the `download` attribute. */
+const DOWNLOAD_NAME = DOWNLOAD_URL.split("/").pop() ?? "PersonaBoard-Setup.exe";
 
 /* One env variable points the web app at the Hono server. */
 const SERVER_URL = env.NEXT_PUBLIC_SERVER_URL;
