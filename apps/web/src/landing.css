@@ -254,8 +254,29 @@ body {
 /* ---------- Hero ---------- */
 
 .lp-hero {
+  position: relative;
   text-align: center;
   padding: 96px 0 0;
+}
+
+.lp-hero-glow {
+  position: absolute;
+  top: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(720px, 90vw);
+  height: 420px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(184, 134, 61, 0.14) 0%,
+    rgba(184, 134, 61, 0.05) 45%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.lp-hero > * {
+  position: relative;
 }
 
 .lp-hero-badge {
