@@ -55,19 +55,17 @@ export function Hero() {
 export function VideoPlaceholder() {
   return (
     <Reveal className="lp-video lp-container" delay={0.1}>
-      <div className="lp-video-frame" role="img" aria-label="A short video tour of PersonaBoard">
-        <motion.button
-          className="lp-video-play"
-          aria-label="Play the tour (coming soon)"
-          whileHover={{ scale: 1.08 }}
-          whileTap={{ scale: 0.94 }}
-          transition={{ duration: 0.15 }}
-        >
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M8 5.5v13l11-6.5-11-6.5z" />
-          </svg>
-        </motion.button>
-        <span className="lp-video-caption">A 60-second tour of the board — video coming soon</span>
+      <div className="lp-video-frame">
+        <video
+          src="/videos/demo.mp4"
+          className="lp-video-el"
+          autoPlay
+          muted
+          loop
+          playsInline
+          controls
+          aria-label="A short video tour of PersonaBoard"
+        />
       </div>
     </Reveal>
   );
