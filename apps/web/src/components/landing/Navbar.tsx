@@ -33,8 +33,11 @@ export function Navbar() {
     >
       <div className="lp-container">
         <nav className="lp-nav-pill" aria-label="Main">
-          <a href="#top" className="lp-nav-logo" aria-label="PersonaBoard home">
-            P
+          <a href="#top" className="lp-nav-brand" aria-label="PersonaBoard home">
+            <span className="lp-nav-logo" aria-hidden="true">
+              P
+            </span>
+            <span className="lp-nav-wordmark">PersonaBoard</span>
           </a>
 
           <ul className="lp-nav-links">

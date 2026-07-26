@@ -143,6 +143,14 @@ body {
   box-shadow: var(--shadow-lift);
 }
 
+.lp-nav-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
 .lp-nav-logo {
   width: 44px;
   height: 44px;
@@ -154,14 +162,21 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  text-decoration: none;
   flex-shrink: 0;
   transition: transform var(--ease-out), background var(--ease-out);
 }
 
-.lp-nav-logo:hover {
+.lp-nav-brand:hover .lp-nav-logo {
   transform: rotate(-6deg) scale(1.04);
   background: var(--pb-accent-soft);
+}
+
+.lp-nav-wordmark {
+  font-family: var(--font-serif), "Fraunces", Georgia, serif;
+  font-size: 19px;
+  letter-spacing: 0.01em;
+  color: #fbf8f3;
+  white-space: nowrap;
 }
 
 .lp-nav-links {
