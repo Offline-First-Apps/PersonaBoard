@@ -94,14 +94,20 @@ impl Db {
     }
 
     pub fn find_id_by_hash(&self, hash: &str) -> rusqlite::Result<Option<i64>> {
-        let mut stmt = self
-            .conn
-            .prepare("SELECT id FROM items WHERE content_hash = ?1 ORDER BY created_at DESC LIMIT 1")?;
+        let mut stmt = self.conn.prepare(
+            "SELECT id FROM items WHERE content_hash = ?1 ORDER BY created_at DESC LIMIT 1",
+        )?;
         let mut rows = stmt.query(params![hash])?;
         Ok(rows.next()?.map(|row| row.get(0)).transpose()?)
     }
 
-    pub fn insert(&self, content: &str, hash: &str, source_app: Option<&str>, kind: &str) -> rusqlite::Result<i64> {
+    pub fn insert(
+        &self,
+        content: &str,
+        hash: &str,
+        source_app: Option<&str>,
+        kind: &str,
+    ) -> rusqlite::Result<i64> {
         self.conn.execute(
             "INSERT INTO items (content, content_hash, source_app, is_pinned, created_at, last_used_at, kind)
              VALUES (?1, ?2, ?3, 0, ?4, ?4, ?5)",
@@ -128,13 +134,15 @@ impl Db {
     }
 
     pub fn delete(&self, id: i64) -> rusqlite::Result<()> {
-        self.conn.execute("DELETE FROM items WHERE id = ?1", params![id])?;
+        self.conn
+            .execute("DELETE FROM items WHERE id = ?1", params![id])?;
         Ok(())
     }
 
     /// Clear history — pinned items survive.
     pub fn clear_unpinned(&self) -> rusqlite::Result<()> {
-        self.conn.execute("DELETE FROM items WHERE is_pinned = 0", [])?;
+        self.conn
+            .execute("DELETE FROM items WHERE is_pinned = 0", [])?;
         Ok(())
     }
 

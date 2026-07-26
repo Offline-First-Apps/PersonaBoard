@@ -44,9 +44,11 @@ fn save_image(app: &AppHandle, hash: &str, img: &tauri::image::Image) -> Option<
 
 pub fn start_monitor(app: AppHandle) {
     // Seed from the DB so a restart doesn't re-add the current clipboard.
-    let mut last_seen: Option<String> = app
-        .try_state::<AppState>()
-        .and_then(|s| s.db.lock().ok().and_then(|db| db.latest_hash().ok().flatten()));
+    let mut last_seen: Option<String> = app.try_state::<AppState>().and_then(|s| {
+        s.db.lock()
+            .ok()
+            .and_then(|db| db.latest_hash().ok().flatten())
+    });
 
     std::thread::spawn(move || loop {
         let mut handled_text = false;

@@ -37,15 +37,57 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build desktop (Tauri)
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: "exyro45610y2627291"
         run: pnpm --filter desktop exec tauri build
 
-      - name: Upload installer artifact
+      - name: Upload installer artifacts
         uses: actions/upload-artifact@v4
         with:
           name: personaboard-windows
           path: |
             apps/desktop/src-tauri/target/release/bundle/nsis/*.exe
+            apps/desktop/src-tauri/target/release/bundle/nsis/*.exe.sig
             apps/desktop/src-tauri/target/release/bundle/msi/*.msi
+            apps/desktop/src-tauri/target/release/bundle/msi/*.msi.sig
+
+      - name: Extract version
+        id: version
+        shell: pwsh
+        run: |
+          $ver = (Get-Content "apps/desktop/src-tauri/tauri.conf.json" | ConvertFrom-Json).version
+          Write-Output "version=$ver" >> $env:GITHUB_OUTPUT
+
+      - name: Generate latest.json
+        id: updater
+        shell: pwsh
+        env:
+          R2_PUBLIC_URL: ${{ secrets.R2_PUBLIC_URL }}
+        run: |
+          $sigPath = Get-ChildItem "apps/desktop/src-tauri/target/release/bundle/nsis/*.exe.sig" | Select-Object -First 1
+          $signature = Get-Content $sigPath -Raw
+          $version = "${{ steps.version.outputs.version }}"
+          $installerUrl = if ("$env:R2_PUBLIC_URL" -ne "") { "$env:R2_PUBLIC_URL/PersonaBoard-Setup.exe" } else { "https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com/${{ secrets.R2_BUCKET }}/PersonaBoard-Setup.exe" }
+          $json = @{
+            version = $version
+            notes  = ""
+            pub_date = (Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ")
+            platforms = @{
+              "windows-x86_64" = @{
+                signature = $signature.Trim()
+                url       = $installerUrl
+              }
+            }
+          } | ConvertTo-Json -Compress
+          $json | Set-Content "latest.json"
+          Write-Output "signature=$signature" >> $env:GITHUB_OUTPUT
+
+      - name: Upload latest.json artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: personaboard-update
+          path: latest.json
 
       - name: Upload to R2
         if: ${{ env.R2_ACCOUNT_ID != '' }}
@@ -60,3 +102,8 @@ jobs:
           $exe = Get-ChildItem "apps/desktop/src-tauri/target/release/bundle/nsis/*.exe" | Select-Object -First 1
           aws s3 cp "$($exe.FullName)" "s3://$env:R2_BUCKET/PersonaBoard-Setup.exe" `
             --endpoint-url $endpoint --content-disposition "attachment; filename=PersonaBoard-Setup.exe"
+          $sig = Get-ChildItem "apps/desktop/src-tauri/target/release/bundle/nsis/*.exe.sig" | Select-Object -First 1
+          aws s3 cp "$($sig.FullName)" "s3://$env:R2_BUCKET/PersonaBoard-Setup.exe.sig" `
+            --endpoint-url $endpoint --content-type "text/plain"
+          aws s3 cp "latest.json" "s3://$env:R2_BUCKET/latest.json" `
+            --endpoint-url $endpoint --content-type "application/json"

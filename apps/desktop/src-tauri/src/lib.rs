@@ -7,6 +7,7 @@ pub mod tray;
 use std::sync::Mutex;
 use tauri::{Emitter, Manager};
 use tauri_plugin_autostart::ManagerExt;
+use tauri_plugin_updater::UpdaterExt;
 
 pub struct AppState {
     pub db: Mutex<db::Db>,
@@ -26,7 +27,11 @@ pub fn show_toast(app: &tauri::AppHandle, kind: &str) {
         }
         let _ = window.show();
     }
-    let event = if kind == "pasted" { "toast-pasted" } else { "toast-copied" };
+    let event = if kind == "pasted" {
+        "toast-pasted"
+    } else {
+        "toast-copied"
+    };
     let _ = app.emit(event, ());
 }
 
@@ -39,6 +44,7 @@ pub fn hide_toast(app: &tauri::AppHandle) {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_autostart::init(
             tauri_plugin_autostart::MacosLauncher::LaunchAgent,
@@ -66,6 +72,21 @@ pub fn run() {
 
             tray::setup(app)?;
             clipboard::start_monitor(app.handle().clone());
+
+            // Silently check for updates on every startup
+            let handle = app.handle().clone();
+            tauri::async_runtime::spawn(async move {
+                let builder = match handle.updater_builder().build() {
+                    Ok(b) => b,
+                    Err(_) => return,
+                };
+                let update = match builder.check().await {
+                    Ok(Some(u)) => u,
+                    _ => return,
+                };
+                let _ = update.download_and_install(|_, _| {}, || {}).await;
+            });
+
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
