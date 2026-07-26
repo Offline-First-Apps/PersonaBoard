@@ -19,19 +19,8 @@ interface BentoFeature {
 /* Row 1 — the two hero features */
 const TOP: BentoFeature[] = [
   {
-    title: "Summon it from anywhere",
-    body: "One hotkey and the board settles onto your screen — centered, calm, already focused on search. Press it again and it's gone. Less like opening an app, more like remembering something.",
-    shot: "screenshot — the board floating over a desktop",
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" {...stroke} aria-hidden="true">
-        <rect x="3" y="5" width="18" height="14" rx="2" />
-        <path d="M7 9h2M11 9h2M15 9h2M7 13h10" />
-      </svg>
-    ),
-  },
-  {
-    title: "Find it in two seconds",
-    body: "Type a word you remember — “track”, “address”, that function name — and the list narrows as you type. Arrows to choose, Enter to paste, Escape to walk away.",
+    title: "Never search for something you already found.",
+    body: "You copy a tracking number in the morning. At 4 PM, you press the hotkey, type “track,” and it's there. No digging through emails. No retracing your browser history. You just... have it.",
     shot: "screenshot — searching “track”, one result highlighted",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" {...stroke} aria-hidden="true">
@@ -40,13 +29,25 @@ const TOP: BentoFeature[] = [
       </svg>
     ),
   },
+  {
+    title: "Never lose a thought to an accidental overwrite.",
+    body: "You copy something important. Before you paste, you grab a link. The important thing is gone — at least, that's how it used to work. PersonaBoard keeps it. It's the second item. Look.",
+    shot: "screenshot — the timeline with the rescued item second",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" {...stroke} aria-hidden="true">
+        <path d="M3 12a9 9 0 1 0 3-6.7" />
+        <path d="M3 4v5h5" />
+        <path d="M12 8v4l3 2" />
+      </svg>
+    ),
+  },
 ];
 
 /* Row 2 — the quieter strengths */
 const BOTTOM: BentoFeature[] = [
   {
-    title: "Keep the important ones close",
-    body: "Pin what you reach for daily. Pinned items sit under “Kept close” and survive every history clear.",
+    title: "Never re-type what you use every day.",
+    body: "Some things you paste over and over. Don't. Pin them once, and they're always waiting — above the timeline, easy to reach, impossible to lose.",
     shot: "screenshot — the Kept close section",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" {...stroke} aria-hidden="true">
@@ -56,8 +57,8 @@ const BOTTOM: BentoFeature[] = [
     ),
   },
   {
-    title: "Images remembered too",
-    body: "Screenshots and copied images land on the board with real thumbnails — not just text gets a second chance.",
+    title: "Images, not just text.",
+    body: "Screenshots, copied images, diagrams — they land on the board with real thumbnails. Because not everything worth keeping is words.",
     shot: "screenshot — image thumbnails on the board",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" {...stroke} aria-hidden="true">
@@ -68,8 +69,8 @@ const BOTTOM: BentoFeature[] = [
     ),
   },
   {
-    title: "Private by design",
-    body: "No account, no sync, no analytics. Your clipboard lives in a local database, and clearing it actually clears it.",
+    title: "Private by design.",
+    body: "No account required. No cloud sync. No analytics. No telemetry. Your clipboard lives in a local database on your machine, and clearing it means it's actually cleared. It's your board. Not ours.",
     shot: "screenshot — settings, retention and clear controls",
     id: "privacy",
     icon: (
@@ -106,7 +107,7 @@ export function Features() {
   return (
     <section className="lp-section lp-container" id="features">
       <Reveal className="lp-center">
-        <p className="lp-section-eyebrow">What it does</p>
+        <p className="lp-section-eyebrow">Why it matters</p>
         <h2 className="lp-section-title">
           A clipboard that remembers,
           <br />

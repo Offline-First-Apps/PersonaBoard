@@ -63,15 +63,15 @@ export function FinalCta() {
     <div className="lp-container" id="download">
       <Reveal className="lp-final-cta">
         <h2>
-          Ready to stop
-          <br />
-          re-copying things?
+          Your computer remembers the last thing you copied.
+          PersonaBoard remembers <em>all of it.</em>
         </h2>
         <p>
-          Download PersonaBoard, copy like you normally do, and the next time you think
-          &ldquo;I just had that&rdquo; — you&apos;ll still have it.
+          That tracking number from this morning. The address from that email. The code snippet
+          you almost lost. The phrase you type ten times a day. All of it — searchable,
+          organized, and never more than a hotkey away.
         </p>
-        <DownloadButton className="lp-btn lp-btn-light">Download for free</DownloadButton>
+        <DownloadButton className="lp-btn lp-btn-light">Download free for Windows</DownloadButton>
       </Reveal>
     </div>
   );
@@ -86,8 +86,7 @@ export function Footer() {
             <div className="lp-footer-brand">
               <Wordmark />
               <p className="lp-footer-tag">
-                A quiet clipboard history for your desktop. No cloud, no accounts — everything
-                stays on your machine.
+                A quiet clipboard history for your desktop. Everything you copy, kept close.
               </p>
               <div className="lp-footer-socials">
                 {SOCIALS.map((s) => (

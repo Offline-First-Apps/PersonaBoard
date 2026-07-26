@@ -395,6 +395,74 @@ body {
   color: var(--pb-text-secondary);
 }
 
+/* ---------- How it works: 3 steps ---------- */
+
+.lp-steps {
+  margin-top: 56px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.lp-step {
+  position: relative;
+  background: var(--pb-surface);
+  border: 1px solid var(--pb-border);
+  border-radius: 18px;
+  padding: 28px 26px 30px;
+  box-shadow: var(--shadow-surface);
+  transition: box-shadow 200ms ease-out, transform 200ms ease-out;
+  overflow: hidden;
+}
+
+.lp-step:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lift);
+}
+
+.lp-step h3 {
+  font-size: 17.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--pb-text-primary);
+  margin-top: 18px;
+}
+
+.lp-step p {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--pb-text-secondary);
+  margin-top: 10px;
+}
+
+.lp-step-num {
+  position: absolute;
+  top: 6px;
+  right: 18px;
+  font-size: 84px;
+  line-height: 1;
+  color: rgba(184, 134, 61, 0.12);
+  pointer-events: none;
+  user-select: none;
+}
+
+.lp-step-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  background: var(--pb-accent-soft);
+  color: var(--pb-accent-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 860px) {
+  .lp-steps {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ---------- Sections ---------- */
 
 .lp-section {
@@ -586,11 +654,16 @@ body {
 .lp-final-cta h2 {
   font-family: var(--font-serif), "Fraunces", Georgia, serif;
   font-weight: 500;
-  font-size: clamp(30px, 4.5vw, 48px);
-  line-height: 1.12;
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.18;
   color: #fbf8f3;
-  max-width: 22ch;
+  max-width: 26ch;
   margin: 0 auto;
+}
+
+.lp-final-cta h2 em {
+  font-style: italic;
+  color: #f3e6c8;
 }
 
 .lp-final-cta p {

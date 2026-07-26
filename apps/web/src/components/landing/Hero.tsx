@@ -29,27 +29,23 @@ export function Hero() {
         </motion.div>
 
         <motion.h1 variants={item}>
-          Everything you copy, <em>kept close.</em>
+          Your clipboard, <em>remembered.</em>
         </motion.h1>
 
         <motion.p className="lp-hero-sub" variants={item}>
-          PersonaBoard is a quiet clipboard history for your desktop. Press one hotkey, find the
-          thing you copied this morning, paste it, and get back to work. No cloud, no accounts —
-          it all stays on your machine.
+          PersonaBoard quietly keeps everything you copy, so nothing slips away. One hotkey,
+          and it&apos;s all right there. No cloud. No accounts. Just a private board for your
+          thoughts.
         </motion.p>
 
         <motion.div className="lp-hero-ctas" variants={item}>
-          <DownloadButton className="lp-btn lp-btn-primary">Download for free</DownloadButton>
-          <a href="#how-it-works" className="lp-btn lp-btn-secondary">
-            See how it works
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M12 5v14M6 13l6 6 6-6" />
-            </svg>
-          </a>
+          <DownloadButton className="lp-btn lp-btn-primary">
+            Download free for Windows
+          </DownloadButton>
         </motion.div>
 
         <motion.p className="lp-hero-note" variants={item}>
-          Windows · Free while in early access · One hotkey: ⌃⇧V
+          Free for Windows · One hotkey: ⌃⇧V
         </motion.p>
       </motion.div>
     </section>
@@ -59,7 +55,7 @@ export function Hero() {
 export function VideoPlaceholder() {
   return (
     <Reveal className="lp-video lp-container" delay={0.1}>
-      <div className="lp-video-frame" role="img" aria-label="A short video tour of PersonaBoard" id="how-it-works">
+      <div className="lp-video-frame" role="img" aria-label="A short video tour of PersonaBoard">
         <motion.button
           className="lp-video-play"
           aria-label="Play the tour (coming soon)"
