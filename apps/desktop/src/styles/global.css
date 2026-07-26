@@ -1050,7 +1050,60 @@ body {
   .pb-panel,
   .pb-item-enter,
   .pb-item-leave,
-  .pb-pulse {
+  .pb-pulse,
+  .pb-toast {
     animation: none !important;
   }
+}
+
+/* ---------- Toast overlay ---------- */
+.pb-toast-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+.pb-toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 22px;
+  background: var(--pb-surface);
+  border-radius: 999px;
+  box-shadow: var(--shadow-panel);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--pb-text-primary);
+  white-space: nowrap;
+  animation: pbToastIn 200ms ease-out;
+}
+
+.pb-toast-tick {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--pb-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+@keyframes pbToastIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pbToastOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-8px); }
+}
+
+.pb-toast-leave {
+  animation: pbToastOut 200ms ease-in forwards;
 }

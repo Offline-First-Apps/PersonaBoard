@@ -2,7 +2,8 @@
 //! against the most recent item. The board silently collects — no
 //! notifications, no popups.
 
-use crate::{db::Db, AppState};
+use crate::db::Db;
+use crate::AppState;
 use sha2::{Digest, Sha256};
 use std::path::PathBuf;
 use std::time::Duration;
@@ -54,7 +55,27 @@ pub fn start_monitor(app: AppHandle) {
             if !text.trim().is_empty() {
                 handled_text = true;
                 let hash = sha256_hex(text.as_bytes());
-                if last_seen.as_deref() != Some(hash.as_str()) {
+
+                // Self-write guard — skip recording if we just wrote this ourselves
+                let is_self = if let Some(state) = app.try_state::<AppState>() {
+                    if let Ok(mut pending) = state.self_write_pending.lock() {
+                        if pending.as_deref() == Some(&hash) {
+                            *pending = None;
+                            true
+                        } else {
+                            *pending = None;
+                            false
+                        }
+                    } else {
+                        false
+                    }
+                } else {
+                    false
+                };
+
+                if is_self {
+                    last_seen = Some(hash);
+                } else if last_seen.as_deref() != Some(hash.as_str()) {
                     let changed = app
                         .try_state::<AppState>()
                         .and_then(|s| s.db.lock().ok().map(|db| record(&db, &text, &hash, "text")))
@@ -62,6 +83,7 @@ pub fn start_monitor(app: AppHandle) {
                     last_seen = Some(hash);
                     if changed {
                         let _ = app.emit("items-changed", ());
+                        crate::show_toast(&app, "copied");
                     }
                 }
             }
@@ -84,6 +106,7 @@ pub fn start_monitor(app: AppHandle) {
                     last_seen = Some(hash);
                     if changed {
                         let _ = app.emit("items-changed", ());
+                        crate::show_toast(&app, "copied");
                     }
                 }
             }

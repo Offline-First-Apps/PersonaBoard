@@ -1,6 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
-import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 
 /* Typed bridge to the Rust backend. */
 
@@ -24,7 +23,7 @@ export const deleteItem = (id: number) => invoke<void>("delete_item", { id });
 
 export const clearHistory = () => invoke<void>("clear_history");
 
-export const copyToClipboard = (text: string) => writeText(text);
+export const copyToClipboard = (text: string) => invoke<void>("write_to_clipboard", { text });
 
 export interface Settings {
   hotkey: string;

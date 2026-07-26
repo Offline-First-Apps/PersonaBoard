@@ -12,6 +12,7 @@
   "app": {
     "windows": [
       {
+        "label": "main",
         "title": "PersonaBoard",
         "width": 1000,
         "height": 780,
@@ -23,6 +24,21 @@
         "visible": true,
         "center": true,
         "skipTaskbar": false
+      },
+      {
+        "label": "toast",
+        "title": "",
+        "url": "/?window=toast",
+        "width": 320,
+        "height": 60,
+        "resizable": false,
+        "decorations": false,
+        "transparent": true,
+        "alwaysOnTop": true,
+        "visible": false,
+        "skipTaskbar": true,
+        "focus": false,
+        "shadow": false
       }
     ],
     "security": {

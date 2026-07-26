@@ -1,7 +1,9 @@
 //! Tauri commands exposed to the frontend.
 
 use crate::{config::Settings, db::Item, AppState};
+use sha2::{Digest, Sha256};
 use tauri::{AppHandle, Emitter, State};
+use tauri_plugin_clipboard_manager::ClipboardExt;
 
 fn lock_db<'a>(state: &'a State<'a, AppState>) -> Result<std::sync::MutexGuard<'a, crate::db::Db>, String> {
     state.db.lock().map_err(|e| e.to_string())
@@ -48,4 +50,26 @@ pub fn save_settings(settings: Settings, app: AppHandle, state: State<AppState>)
     }
     *state.settings.lock().map_err(|e| e.to_string())? = settings.clone();
     crate::config::save(&app, &settings).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub fn write_to_clipboard(text: String, app: AppHandle, state: State<AppState>) -> Result<(), String> {
+    let hash = Sha256::digest(text.as_bytes());
+    let hash_hex = hash.iter().map(|b| format!("{b:02x}")).collect::<String>();
+    *state.self_write_pending.lock().map_err(|e| e.to_string())? = Some(hash_hex);
+    app.clipboard().write_text(text).map_err(|e| e.to_string())?;
+    crate::show_toast(&app, "copied");
+    Ok(())
+}
+
+#[tauri::command]
+pub fn show_toast_cmd(app: AppHandle, kind: String) -> Result<(), String> {
+    crate::show_toast(&app, &kind);
+    Ok(())
+}
+
+#[tauri::command]
+pub fn hide_toast_cmd(app: AppHandle) -> Result<(), String> {
+    crate::hide_toast(&app);
+    Ok(())
 }
