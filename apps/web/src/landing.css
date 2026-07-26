@@ -21,10 +21,11 @@
 
 html {
   scroll-behavior: smooth;
+  background: #fbf8f3;
 }
 
 body {
-  background: var(--pb-base);
+  background: #fbf8f3;
   color: var(--pb-text-primary);
 }
 
@@ -275,7 +276,7 @@ body {
   pointer-events: none;
 }
 
-.lp-hero > * {
+.lp-hero > :not(.lp-hero-glow) {
   position: relative;
 }
 
