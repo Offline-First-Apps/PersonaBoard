@@ -23,6 +23,9 @@ export const metadata: Metadata = {
   title: "PersonaBoard — Everything you copy, kept close",
   description:
     "PersonaBoard is a quiet clipboard history for your desktop. Summon it with a hotkey, find what you copied, paste it, and get back to work. No cloud, no accounts — everything stays on your machine.",
+  appleWebApp: {
+    title: "PersonaBoard",
+  },
 };
 
 export default function RootLayout({
