@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { trackEvent } from "@/lib/gtag";
 import { DownloadDialog } from "./DownloadDialog";
 
 /* Every "Download for free" CTA on the page renders through this — one
@@ -29,7 +30,10 @@ export function DownloadButton({
       <motion.button
         type="button"
         className={className}
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          trackEvent("open_download_dialog");
+          setOpen(true);
+        }}
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.96 }}
         transition={{ duration: 0.15 }}

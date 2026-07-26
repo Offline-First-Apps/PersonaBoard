@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { env } from "@personaboard/env/web";
+import { trackEvent } from "@/lib/gtag";
 
 /* The installer lives here once we publish releases. */
 const DOWNLOAD_URL = "/downloads/personaboard-setup.exe";
@@ -73,6 +74,7 @@ export function DownloadDialog({ open, onClose }: DownloadDialogProps) {
     if (!validate()) return;
 
     await captureLead(name.trim(), email.trim());
+    trackEvent("download_app", { platform: "windows" });
 
     // The `download` attribute forces a save. If a browser still opens the
     // file in a new tab (e.g. unknown MIME type), the fallback link below
