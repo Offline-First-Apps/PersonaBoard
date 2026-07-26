@@ -46,11 +46,16 @@ COPY apps/web/ apps/web/
 RUN pnpm --filter web build
 
 # ---- Runner: static files only ----
-# No custom nginx config — Coolify fronts the container with its own nginx
-# (routing, TLS, caching headers). The stock nginx:alpine config is enough:
-# the site is a single static page plus hashed assets under /_next/static.
+# No custom nginx config — Coolify fronts the container with its own proxy
+# (routing, TLS, caching headers), same as the reference projects' web apps.
+# Those apps are Next servers listening on 3001; to match that expectation
+# exactly (Coolify "Ports Exposes: 3001"), the stock nginx config is
+# re-pointed from 80 to 3001 here — no config file needed.
 FROM nginx:alpine AS runner
+
+RUN sed -i 's/listen\s*80;/listen 3001;/; s/listen\s*\[::\]:80;/listen [::]:3001;/' \
+    /etc/nginx/conf.d/default.conf
 
 COPY --from=builder /app/apps/web/out /usr/share/nginx/html
 
-EXPOSE 80
+EXPOSE 3001
